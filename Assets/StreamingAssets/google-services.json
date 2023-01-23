@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "450336531059",
+    "firebase_url": "https://doodlefall-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "doodlefall",
+    "storage_bucket": "doodlefall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450336531059:android:15f664a05bb30439760006",
+        "android_client_info": {
+          "package_name": "com.Yrgo.Doodlefall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450336531059-dimjtlui7r9vfu3s2lmc0kiroqoo0nbi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZJPHGgo7w9OT2d95Akhf-83RR_hU6Oi8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450336531059-dimjtlui7r9vfu3s2lmc0kiroqoo0nbi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
