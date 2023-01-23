@@ -1,4 +1,5 @@
-using System;
+using System.IO;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -80,28 +81,46 @@ public class MainMenuScript : MonoBehaviour
 
         string jsonString = JsonUtility.ToJson(playerInfo);
 
-        PlayerPrefs.SetString(PLAYER_SAVE_JSON_KEY, jsonString);
+        //PlayerPrefs.SetString(PLAYER_SAVE_JSON_KEY, jsonString);
 
         //PlayerPrefs.SetFloat(PLAYER_BALL_KEY_COLOR, colorSlider.value);
         //PlayerPrefs.SetInt(PLAYER_BALL_KEY_MATERIAL, ballType);
+        
+        //the default name string is a temporary fix until a profile selection system is implemented.
+        string defaultName = "nada";
+
+        SaveToFile(playerName + "save", jsonString);
+        SaveToFile(defaultName, jsonString);
     }
 
     private void LoadPlayerInfo()
     {
-        string loadedData = PlayerPrefs.GetString(PLAYER_SAVE_JSON_KEY);
+        string loadedData;
+        string defaultName = "nada";
 
-        PlayerInfo loadedTemp = JsonUtility.FromJson<PlayerInfo>(loadedData);
+        if (string.IsNullOrEmpty(playerName))
+        {
+            loadedData = LoadFromFile(defaultName);
+        }
+        else
+        {
+            loadedData = LoadFromFile(playerName + "save");
+        }
+        
+        playerInfo = JsonUtility.FromJson<PlayerInfo>(loadedData);
 
-        playerName = loadedTemp.playerName;
-        ballType = loadedTemp.ballType;
-        colorSlider.value = loadedTemp.ballColor;
+        //PlayerInfo loadedTemp = JsonUtility.FromJson<PlayerInfo>(loadedData);
+
+        playerName = playerInfo.playerName;
+        ballType = playerInfo.ballType;
+        colorSlider.value = playerInfo.ballColor;
 
         //ballType = PlayerPrefs.GetInt(PLAYER_BALL_KEY_MATERIAL);
 
-        if (loadedTemp.ballType == 0)
+        if (playerInfo.ballType == 0)
             ballType = 1;
         else
-            ballType = loadedTemp.ballType;
+            ballType = playerInfo.ballType;
         //if (!PlayerPrefs.HasKey(PLAYER_BALL_KEY_MATERIAL))
         //    ballType = 1;
         if (ballType == 1)
@@ -146,6 +165,25 @@ public class MainMenuScript : MonoBehaviour
             ballType = 1;
             playerBallMesh.material = ballMaterials[0];
             colorSlider.value = 0;
+        }
+    }
+    private void SaveToFile(string fileName, string jsonString)
+    {
+        using (var stream = File.OpenWrite(fileName))
+        {
+            stream.SetLength(0);
+
+            var bytes = Encoding.UTF8.GetBytes(jsonString);
+
+            stream.Write(bytes, 0, bytes.Length);
+        }
+    }   
+
+    private string LoadFromFile(string fileName)
+    {
+        using (var stream = File.OpenText(fileName))
+        {
+            return stream.ReadToEnd();
         }
     }
 }
