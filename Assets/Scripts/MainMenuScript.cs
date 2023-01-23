@@ -1,15 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
 
 public class MainMenuScript : MonoBehaviour
 {
     private const string PLAYER_INFO_KEY = "PlayerName";
     private const string PLAYER_BALL_KEY_COLOR = "PlayerBallColor";
     private const string PLAYER_BALL_KEY_MATERIAL = "PlayerBallMaterial";
+    private const string PLAYER_SAVE_JSON_KEY = "PlayerSaveInfoInJSON";
 
     [SerializeField] TMP_Text welcomeText;
     [SerializeField] TMP_InputField nameInputField;
@@ -22,15 +23,21 @@ public class MainMenuScript : MonoBehaviour
     [SerializeField] GameObject metallicButton;
     [SerializeField] GameObject woodenButton;
 
+    private GameManager gameManager;
+    private PlayerInfo playerInfo;
+
+    private string playerName;
     private Color ballColor;
     private int ballType = 1;
 
+
     void Start()
     {
+        playerInfo = new PlayerInfo();
         colorSlider.onValueChanged.AddListener(delegate { ChangeBallColor(); });
         nameInputField.onValueChanged.AddListener(delegate { SetPlayerName(nameInputField.text); SetWelcomeText(); });
+        LoadPlayerInfo();
         SetWelcomeText();
-        LoadBallInfo();
         UISetup();
     }
 
@@ -41,7 +48,6 @@ public class MainMenuScript : MonoBehaviour
             metallicButton.SetActive(false);
             woodenButton.SetActive(true);
         }
-            
     }
 
     void Update()
@@ -56,7 +62,8 @@ public class MainMenuScript : MonoBehaviour
 
     private void SetPlayerName(string name)
     {
-        PlayerPrefs.SetString(PLAYER_INFO_KEY, name);
+        playerName = name;
+        //PlayerPrefs.SetString(PLAYER_INFO_KEY, name);
     }
 
     private string GetPlayerName()
@@ -65,35 +72,58 @@ public class MainMenuScript : MonoBehaviour
         return name;
     }
 
-    public void SaveBallInfo()
+    public void SavePlayerInfo()
     {
-        PlayerPrefs.SetFloat(PLAYER_BALL_KEY_COLOR, colorSlider.value);
-        PlayerPrefs.SetInt(PLAYER_BALL_KEY_MATERIAL, ballType);
+        playerInfo.playerName = playerName;
+        playerInfo.ballType = ballType;
+        playerInfo.ballColor = colorSlider.value;
+
+        string jsonString = JsonUtility.ToJson(playerInfo);
+
+        PlayerPrefs.SetString(PLAYER_SAVE_JSON_KEY, jsonString);
+
+        //PlayerPrefs.SetFloat(PLAYER_BALL_KEY_COLOR, colorSlider.value);
+        //PlayerPrefs.SetInt(PLAYER_BALL_KEY_MATERIAL, ballType);
     }
 
-    private void LoadBallInfo()
+    private void LoadPlayerInfo()
     {
-        ballType = PlayerPrefs.GetInt(PLAYER_BALL_KEY_MATERIAL);
+        string loadedData = PlayerPrefs.GetString(PLAYER_SAVE_JSON_KEY);
 
-        if (!PlayerPrefs.HasKey(PLAYER_BALL_KEY_MATERIAL))
+        PlayerInfo loadedTemp = JsonUtility.FromJson<PlayerInfo>(loadedData);
+
+        playerName = loadedTemp.playerName;
+        ballType = loadedTemp.ballType;
+        colorSlider.value = loadedTemp.ballColor;
+
+        //ballType = PlayerPrefs.GetInt(PLAYER_BALL_KEY_MATERIAL);
+
+        if (loadedTemp.ballType == 0)
             ballType = 1;
+        else
+            ballType = loadedTemp.ballType;
+        //if (!PlayerPrefs.HasKey(PLAYER_BALL_KEY_MATERIAL))
+        //    ballType = 1;
         if (ballType == 1)
             playerBallMesh.material = ballMaterials[0];
         else if (ballType == 2)
             playerBallMesh.material = ballMaterials[1];
 
-        colorSlider.value = PlayerPrefs.GetFloat(PLAYER_BALL_KEY_COLOR);
         playerBallMesh.material.color = Color.HSVToRGB(colorSlider.value, 0.85f, 0.85f);
+
+        //colorSlider.value = PlayerPrefs.GetFloat(PLAYER_BALL_KEY_COLOR);
+        //playerBallMesh.material.color = Color.HSVToRGB(colorSlider.value, 0.85f, 0.85f);
     }
 
     private void SetWelcomeText()
     {
-        if (!PlayerPrefs.HasKey(PLAYER_INFO_KEY))
+        if (string.IsNullOrEmpty(playerName))
+        //if (!PlayerPrefs.HasKey(PLAYER_INFO_KEY))
         {
             welcomeText.SetText("Welcome new player!");
         }
         else
-            welcomeText.SetText("Welcome " + GetPlayerName() + "!");
+            welcomeText.SetText("Welcome " + playerName + "!");
     }
 
     private void ChangeBallColor()
