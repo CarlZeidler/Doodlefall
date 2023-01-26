@@ -8,21 +8,23 @@ using TMPro;
 
 public class MainMenuScript : MonoBehaviour
 {
+    #region Serialized Fields
+        [SerializeField] TMP_Text welcomeText;
+        [SerializeField] TMP_InputField nameInputField;
+        [SerializeField] Material woodMaterial;
+        [SerializeField] Material metallicMaterial;
+        [SerializeField] Slider colorSlider;
+        [SerializeField] GameObject playerBall;
+        [SerializeField] MeshRenderer playerBallMesh;
+        [SerializeField] Material[] ballMaterials;
+        [SerializeField] GameObject metallicButton;
+        [SerializeField] GameObject woodenButton;
+    #endregion
+    
     private const string PLAYER_INFO_KEY = "PlayerName";
     private const string PLAYER_BALL_KEY_COLOR = "PlayerBallColor";
     private const string PLAYER_BALL_KEY_MATERIAL = "PlayerBallMaterial";
     private const string PLAYER_SAVE_JSON_KEY = "PlayerSaveInfoInJSON";
-
-    [SerializeField] TMP_Text welcomeText;
-    [SerializeField] TMP_InputField nameInputField;
-    [SerializeField] Material woodMaterial;
-    [SerializeField] Material metallicMaterial;
-    [SerializeField] Slider colorSlider;
-    [SerializeField] GameObject playerBall;
-    [SerializeField] MeshRenderer playerBallMesh;
-    [SerializeField] Material[] ballMaterials;
-    [SerializeField] GameObject metallicButton;
-    [SerializeField] GameObject woodenButton;
 
     private GameManager gameManager;
     private PlayerInfo playerInfo;

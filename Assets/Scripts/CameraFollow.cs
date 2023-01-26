@@ -17,7 +17,6 @@ public class CameraFollow : MonoBehaviour
         
     }
 
-
     void Update()
     {
         if (following)
