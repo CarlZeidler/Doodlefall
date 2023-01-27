@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using Firebase.Database;
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
@@ -14,7 +15,7 @@ public class LoginScreenScript : MonoBehaviour
 
     [SerializeField] private GameObject loginCanvas;
     [SerializeField] private GameObject nameConfirmCanvas;
-    [SerializeField] private GameObject mainMenuCanvas;
+    [SerializeField] private GameObject playerSetupCanvas;
     [SerializeField] private TMP_InputField usernameField;
     [SerializeField] private TMP_InputField emailField;
     [SerializeField] private TMP_InputField passwordField;
@@ -26,10 +27,12 @@ public class LoginScreenScript : MonoBehaviour
     
     private SaveManager saveManager;
     private GameManager gameManager;
+    private MainMenuScript mainMenu;
+    private PlayerStats playerStats;
 
     private void Update()
     {
-        
+         
     }
 
     private void Start()
@@ -40,19 +43,33 @@ public class LoginScreenScript : MonoBehaviour
 
     public void StartSignIn()
     {
-        saveManager.UserSignIn(emailField.text, passwordField.text);
+        SaveManager.Instance.UserSignIn(emailField.text, passwordField.text, SignInCallback);
+        // saveManager.UserSignIn(emailField.text, passwordField.text, SignInCallback);
     }
 
     public void StartRegistration()
     {
-        saveManager.RegisterNewUser(emailField.text, passwordField.text, RegistrationCallback);
+        SaveManager.Instance.RegisterNewUser(emailField.text, passwordField.text, RegistrationCallback);
+        // saveManager.RegisterNewUser(emailField.text, passwordField.text, RegistrationCallback);
     }
 
     public void StartAnonymousSignIn()
     {
-        saveManager.AnonymousSignIn(RegistrationCallback);
+        SaveManager.Instance.AnonymousSignIn(anonymousField.text, RegistrationCallback);
+        // saveManager.AnonymousSignIn(anonymousField.text, RegistrationCallback);
     }
 
+    public void StartRegisteringUserName()
+    {
+        SaveManager.Instance.RegisterUserName(usernameField.text, UserNameRegistrationCallback);
+        // saveManager.RegisterUserName(usernameField.text, UserNameRegistrationCallback);
+    }
+
+    public void SaveDataLocally()
+    {
+        
+    }
+    
     public void ActivateButtons()
     {
         if (!string.IsNullOrEmpty(emailField.text) && !string.IsNullOrEmpty(passwordField.text))
@@ -69,13 +86,30 @@ public class LoginScreenScript : MonoBehaviour
         if (anonymousRegistration)
         {
             loginCanvas.SetActive(false);
-            nameConfirmCanvas.SetActive(false);
-            mainMenuCanvas.SetActive(false);            
+            playerSetupCanvas.SetActive(true);            
         }
         else
         {
             loginCanvas.SetActive(false);
             nameConfirmCanvas.SetActive(true);
         }
+    }
+
+    private void UserNameRegistrationCallback()
+    {
+        nameConfirmCanvas.SetActive(false);
+        playerSetupCanvas.SetActive(true);
+        mainMenu.LoadPlayerInfo();
+    }
+
+    public void SignInCallback(DataSnapshot snapshot)
+    {
+        loginCanvas.SetActive(false);
+        playerSetupCanvas.SetActive(true);
+        
+        string jsonString = JsonUtility.ToJson(snapshot);
+        
+        playerStats = JsonUtility.FromJson<PlayerStats>(jsonString);
+        mainMenu.LoadPlayerInfo();
     }
 }
