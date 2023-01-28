@@ -12,20 +12,6 @@ public class FirebaseTest : MonoBehaviour
     private FirebaseDatabase db;
     private FirebaseAuth auth;
 
-    // private void Start()
-    // {
-    //     FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-    //         {
-    //             if (task.Exception != null)
-    //                 Debug.LogError(task.Exception);
-    //
-    //             db = FirebaseDatabase.DefaultInstance;
-    //
-    //             db.RootReference.Child("Hello").SetValueAsync("World!");
-    //         }
-    //     );
-    // }
-
     private void Start()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
@@ -59,9 +45,6 @@ public class FirebaseTest : MonoBehaviour
                 Debug.LogFormat("User registered {0} ({1})",
                     newUser.DisplayName, newUser.UserId);
             }
-            
-            
-                
         });
     }
 

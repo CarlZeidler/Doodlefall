@@ -25,20 +25,32 @@ public class LoginScreenScript : MonoBehaviour
     [SerializeField] private Button anonymousSignInButton;
     #endregion
     
-    private SaveManager saveManager;
-    private GameManager gameManager;
-    private MainMenuScript mainMenu;
-    private PlayerStats playerStats;
+    private SaveManager _saveManager;
+    private GameManager _gameManager;
+    private MainMenuScript _mainMenu;
+    private PlayerStats _playerStats;
 
+    private string _registeredUserJson;
+    
     private void Update()
     {
-         
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            Debug.Log("Logging in test user1");
+            _saveManager.UserSignIn("testuser@testaddress.com", "testtest1", SignInCallback);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            Debug.Log("Logging in test user2");
+            _saveManager.UserSignIn("testuser2@testaddress.com", "testtest1", SignInCallback);
+        }
     }
 
     private void Start()
     {
-        saveManager = FindObjectOfType<SaveManager>();
-        gameManager = FindObjectOfType<GameManager>();
+        _saveManager = FindObjectOfType<SaveManager>();
+        _gameManager = FindObjectOfType<GameManager>();
     }
 
     public void StartSignIn()
@@ -55,7 +67,7 @@ public class LoginScreenScript : MonoBehaviour
 
     public void StartAnonymousSignIn()
     {
-        SaveManager.Instance.AnonymousSignIn(anonymousField.text, RegistrationCallback);
+        SaveManager.Instance.AnonymousRegistrationIn(anonymousField.text, RegistrationCallback);
         // saveManager.AnonymousSignIn(anonymousField.text, RegistrationCallback);
     }
 
@@ -65,11 +77,6 @@ public class LoginScreenScript : MonoBehaviour
         // saveManager.RegisterUserName(usernameField.text, UserNameRegistrationCallback);
     }
 
-    public void SaveDataLocally()
-    {
-        
-    }
-    
     public void ActivateButtons()
     {
         if (!string.IsNullOrEmpty(emailField.text) && !string.IsNullOrEmpty(passwordField.text))
@@ -81,8 +88,10 @@ public class LoginScreenScript : MonoBehaviour
             anonymousSignInButton.interactable = true;
     }
 
-    private void RegistrationCallback(bool anonymousRegistration)
+    private void RegistrationCallback(bool anonymousRegistration, PlayerStats playerStats)
     {
+        this._playerStats = playerStats;
+        
         if (anonymousRegistration)
         {
             loginCanvas.SetActive(false);
@@ -99,7 +108,8 @@ public class LoginScreenScript : MonoBehaviour
     {
         nameConfirmCanvas.SetActive(false);
         playerSetupCanvas.SetActive(true);
-        mainMenu.LoadPlayerInfo();
+        
+        _mainMenu.SavePlayerInfo(_playerStats);
     }
 
     public void SignInCallback(DataSnapshot snapshot)
@@ -107,9 +117,6 @@ public class LoginScreenScript : MonoBehaviour
         loginCanvas.SetActive(false);
         playerSetupCanvas.SetActive(true);
         
-        string jsonString = JsonUtility.ToJson(snapshot);
-        
-        playerStats = JsonUtility.FromJson<PlayerStats>(jsonString);
-        mainMenu.LoadPlayerInfo();
+        _mainMenu.LoadPlayerInfo(snapshot);
     }
 }

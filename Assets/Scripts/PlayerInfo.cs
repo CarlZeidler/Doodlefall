@@ -14,12 +14,22 @@ public class PlayerInfo : MonoBehaviour
     //userID = the Player profile's associated ID
     //playerEmail = the Player profile's associated Email
     //playerIsAnonymous = True if the player is anonymous and not a registered user
+
+    //Data is copied to here to carry over to game scene
     [HideInInspector] public int ballType;
     [HideInInspector] public float ballColor;
     [HideInInspector] public float[] playerScore;
+    
     private void Start()
     {
         DontDestroyOnLoad(this);
     }
-}
 
+    public void CopyPlayerData(int incBallType, float incBallColor, float[] incPlayerScore)
+    {
+        //Data is copied here to carry over to game scene
+        ballType = incBallType;
+        ballColor = incBallColor;
+        playerScore = incPlayerScore;
+    }
+}

@@ -1,7 +1,7 @@
 using System;
 
 [Serializable]
-class PlayerStats
+public class PlayerStats
 {
     public int ballType = 0;
     public float ballColor = 0;

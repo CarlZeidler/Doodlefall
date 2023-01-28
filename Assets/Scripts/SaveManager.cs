@@ -13,8 +13,8 @@ using UnityEditor;
 
 public class SaveManager : MonoBehaviour
 {
-    private PlayerInfo playerInfo;
-    private LoginScreenScript loginScript;
+    private PlayerInfo _playerInfo;
+    private LoginScreenScript _loginScript;
     
     //Singleton variables
     private static SaveManager _instance;
@@ -26,7 +26,7 @@ public class SaveManager : MonoBehaviour
     //Functions that gets called after load or save is completed
     public delegate void OnLoadedDelegate(DataSnapshot snapshot);
     public delegate void OnSaveDelegate();
-    public delegate void OnRegistrationDelegate(bool anonymousRegistration);
+    public delegate void OnRegistrationDelegate(bool anonymousRegistration, PlayerStats playerStats);
     public delegate void OnSigninDelegate(DataSnapshot snapshot);
     
     //Firebase namespaces
@@ -36,7 +36,7 @@ public class SaveManager : MonoBehaviour
     //Key aliases
     const string FBKEY_USERS_PATH = "users";
     const string FBKEY_USERSDATA_PATH = "user_data";
-    
+
     private void Awake()
     {
         //Singleton setup
@@ -60,10 +60,13 @@ public class SaveManager : MonoBehaviour
             db.SetPersistenceEnabled(false);
         });
         
-        playerInfo = FindObjectOfType<PlayerInfo>();
-        loginScript = FindObjectOfType<LoginScreenScript>();
+        _playerInfo = FindObjectOfType<PlayerInfo>();
+        _loginScript = FindObjectOfType<LoginScreenScript>();
     }
 
+    #region USER REGISTRATION FUNCTIONS
+
+    ////////////////////////////// USER REGISTRATION FUNCTIONS //////////////////////////////
     public void RegisterNewUser(string email, string password, OnRegistrationDelegate onRegistrationDelegate)
     {
         Debug.Log("Starting user registration");
@@ -79,21 +82,65 @@ public class SaveManager : MonoBehaviour
             else
             {
                 FirebaseUser newUser = task.Result;
-                playerInfo.userID = newUser.UserId;
-                playerInfo.playerEmail = newUser.Email;
-                playerInfo.playerIsAnonymous = false;
-                Debug.LogFormat("local data saved: {0}, {1}, {2}", playerInfo.userID, playerInfo.playerEmail, playerInfo.playerIsAnonymous.ToString());
+                _playerInfo.userID = newUser.UserId;
+                _playerInfo.playerEmail = newUser.Email;
+                _playerInfo.playerIsAnonymous = false;
+                Debug.LogFormat("local data saved: {0}, {1}, {2}", _playerInfo.userID, _playerInfo.playerEmail, _playerInfo.playerIsAnonymous.ToString());
                 Debug.LogFormat("User registered: {0}, user ID: {1}", newUser.Email, newUser.UserId);
                 
                 Debug.LogFormat("Attempting to start data save: {0}", jsonString);
-                db.RootReference.Child("users").Child(newUser.UserId)
+                db.RootReference.Child(FBKEY_USERS_PATH).Child(newUser.UserId).Child(FBKEY_USERSDATA_PATH)
                     .SetRawJsonValueAsync(jsonString);
                 Debug.Log("User profile data created");
-                onRegistrationDelegate.Invoke(false);
+
+                onRegistrationDelegate.Invoke(false, playerStats);
+            }
+        });
+    }
+    
+    public void RegisterUserName(string userName, OnSaveDelegate onSaveDelegate)
+    {
+        UserProfile newUserProfile = new UserProfile
+        {
+            DisplayName = userName
+        };
+
+        auth.CurrentUser.UpdateUserProfileAsync(newUserProfile).ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+                Debug.LogError(task.Exception);
+            else
+            {
+                _playerInfo.playerID = auth.CurrentUser.DisplayName;
+                _playerInfo.playerName = auth.CurrentUser.DisplayName;
+                onSaveDelegate.Invoke();
             }
         });
     }
 
+    public void AnonymousRegistrationIn(string playerName, OnRegistrationDelegate onRegistrationDelegate)
+    {
+        PlayerStats playerStats = new PlayerStats();
+        
+        auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+                Debug.LogError(task.Exception);
+            else
+            {
+                FirebaseUser newUser = task.Result;
+                Debug.LogFormat("User signed in anonymously: {0}, user ID: {1}", newUser.DisplayName, newUser.UserId);
+                onRegistrationDelegate.Invoke(true, playerStats);
+                _playerInfo.playerName = playerName;
+                _playerInfo.playerIsAnonymous = true;
+            }
+        });
+    }
+    
+    #endregion
+
+    #region USER SIGN-IN FUNCTIONS
+    ////////////////////////////// USER SIGN-IN FUNCTIONS //////////////////////////////
     public void UserSignIn(string email, string password, OnSigninDelegate onSigninDelegate)
     {
         auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
@@ -104,11 +151,11 @@ public class SaveManager : MonoBehaviour
             {
                 FirebaseUser newUser = task.Result;
                 Debug.LogFormat("User signed in: {0}, user ID: {1}", newUser.DisplayName, newUser.UserId);
-                playerInfo.playerID = newUser.DisplayName;
-                playerInfo.playerName = playerInfo.playerID;
-                playerInfo.userID = newUser.UserId;
-                playerInfo.playerEmail = newUser.Email;
-                playerInfo.playerIsAnonymous = false;
+                _playerInfo.playerID = newUser.DisplayName;
+                _playerInfo.playerName = _playerInfo.playerID;
+                _playerInfo.userID = newUser.UserId;
+                _playerInfo.playerEmail = newUser.Email;
+                _playerInfo.playerIsAnonymous = false;
 
                 db.RootReference.Child(FBKEY_USERS_PATH).Child(newUser.UserId).Child(FBKEY_USERSDATA_PATH)
                     .GetValueAsync().ContinueWithOnMainThread(task1 =>
@@ -123,66 +170,37 @@ public class SaveManager : MonoBehaviour
             }
         });
     }
-    
-    public void SaveToFirebase(string path, string data, OnSaveDelegate onSaveDelegate = null)
+
+    #endregion
+
+    #region Save/Load operations
+    ////////////////////////////// SAVE/LOAD OPERATIONS FUNCTIONS //////////////////////////////
+    public void SaveToFirebase(PlayerStats playerStats)
     {
-        db.RootReference.Child(path).SetRawJsonValueAsync(data).ContinueWithOnMainThread(task =>
+        string jsonString = JsonUtility.ToJson(playerStats);
+        
+        db.RootReference.Child(FBKEY_USERS_PATH).Child(auth.CurrentUser.UserId).Child(FBKEY_USERSDATA_PATH)
+            .SetRawJsonValueAsync(jsonString).ContinueWithOnMainThread(task =>
         {
             if (task.Exception != null)
                 Debug.LogWarning(task.Exception);
-            
-            onSaveDelegate?.Invoke();
         });
     }
 
-    public void LoadFromFirebase(string path)
+    public void LoadFromFirebase(OnLoadedDelegate onLoadedDelegate)
     {
-        db.RootReference.Child(FBKEY_USERS_PATH).Child(path).GetValueAsync().ContinueWithOnMainThread(task =>
+        db.RootReference.Child(FBKEY_USERS_PATH).Child(auth.CurrentUser.UserId).Child(FBKEY_USERSDATA_PATH)
+            .GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.Exception != null)
                 Debug.LogError(task.Exception);
 
-            loginScript.SignInCallback(task.Result);
+            _loginScript.SignInCallback(task.Result);
 
         });
     }
-
-    public void AnonymousSignIn(string playerName, OnRegistrationDelegate onRegistrationDelegate)
-    {
-        auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.Exception != null)
-                Debug.LogError(task.Exception);
-            else
-            {
-                FirebaseUser newUser = task.Result;
-                Debug.LogFormat("User signed in anonymously: {0}, user ID: {1}", newUser.DisplayName, newUser.UserId);
-                onRegistrationDelegate.Invoke(true);
-                playerInfo.playerName = playerName;
-                playerInfo.playerIsAnonymous = true;
-            }
-        });
-    }
-
-    public void RegisterUserName(string userName, OnSaveDelegate onSaveDelegate)
-    {
-        UserProfile newUserProfile = new UserProfile
-        {
-            DisplayName = userName
-        };
-
-        auth.CurrentUser.UpdateUserProfileAsync(newUserProfile).ContinueWithOnMainThread(task =>
-        {
-            if (task.Exception != null)
-                Debug.LogError(task.Exception);
-            else
-            {
-                onSaveDelegate.Invoke();
-                playerInfo.playerID = auth.CurrentUser.DisplayName;
-                playerInfo.playerName = playerInfo.playerID;
-            }
-        });
-    }
+    #endregion
+    
     
     public void RemoveDataFromFirebase(string path)
     {

@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using Firebase.Database;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -21,37 +22,24 @@ public class MainMenuScript : MonoBehaviour
         [SerializeField] GameObject woodenButton;
     #endregion
     
-    private const string PLAYER_INFO_KEY = "PlayerName";
-    private const string PLAYER_BALL_KEY_COLOR = "PlayerBallColor";
-    private const string PLAYER_BALL_KEY_MATERIAL = "PlayerBallMaterial";
-    private const string PLAYER_SAVE_JSON_KEY = "PlayerSaveInfoInJSON";
+    private GameManager _gameManager;
+    private SaveManager _saveManager;
+    private PlayerInfo _playerInfo;
+    private PlayerStats _playerStats;
 
-    private GameManager gameManager;
-    private PlayerInfo playerInfo;
-    private PlayerStats playerStats;
-
-    private string playerName;
-    private Color ballColor;
-    private int ballType = 1;
+    private string _playerName;
+    private Color _ballColor;
+    private int _ballType = 1;
 
 
-    void Start()
+    private void Awake()
     {
-        playerInfo = FindObjectOfType<PlayerInfo>();
+        _playerInfo = FindObjectOfType<PlayerInfo>();
+        _saveManager = FindObjectOfType<SaveManager>();
+        _playerStats = new PlayerStats();
         colorSlider.onValueChanged.AddListener(delegate { ChangeBallColor(); });
-        // LoadPlayerInfo();
-        SetWelcomeText();
-        UISetup();
     }
 
-    private void UISetup()
-    {
-        if (ballType == 2)
-        {
-            metallicButton.SetActive(false);
-            woodenButton.SetActive(true);
-        }
-    }
 
     void Update()
     {
@@ -60,99 +48,101 @@ public class MainMenuScript : MonoBehaviour
 
     private void SpinBall()
     {
-        //This function spins the ball (Borpa was here)
+        //Borpa was here
         playerBall.transform.Rotate(new Vector3(0, -0.1f, 0));
     }
 
-    private void SetPlayerName(string name)
+    public void SavePlayerInfo(PlayerStats incomingPlayerStats)
     {
-        playerName = name;
-        //PlayerPrefs.SetString(PLAYER_INFO_KEY, name);
+        _playerStats = incomingPlayerStats;
+
+        _playerStats.ballType = _ballType;      
+        _playerStats.ballColor = colorSlider.value;
     }
 
-    private string GetPlayerName()
+    #region Sign-in operations
+    ////////////////////////////// SIGN-UN OPERATIONS //////////////////////////////
+    public void LoadPlayerInfo(DataSnapshot snapshot)
     {
-        string name = PlayerPrefs.GetString(PLAYER_INFO_KEY);
-        return name;
-    }
+        string jsonString = JsonUtility.ToJson(snapshot);
 
-    public void SavePlayerInfo()
-    {
-        playerInfo.ballType = ballType;
-        playerInfo.ballColor = colorSlider.value;
-
-        string jsonString = JsonUtility.ToJson(playerInfo);
-        string defaultName = "nada";
-
-        SaveToFile(playerName + "save", jsonString);
-        SaveToFile(defaultName, jsonString);
-    }
-
-    public void LoadPlayerInfo()
-    {
-        playerName = playerInfo.playerName;
-        colorSlider.value = playerInfo.ballColor;
+        _playerStats = JsonUtility.FromJson<PlayerStats>(jsonString);
         
-        if (playerInfo.ballType == 0)
-            ballType = 1;
-        else
-            ballType = playerInfo.ballType;
-        if (ballType == 1)
-            playerBallMesh.material = ballMaterials[0];
-        else if (ballType == 2)
-            playerBallMesh.material = ballMaterials[1];
+        _playerName = _playerInfo.playerName;
+        colorSlider.value = _playerStats.ballColor;
+        
+        SetWelcomeText();
 
+        if (_playerStats.ballType == 0)
+        {
+            _ballType = 1;
+            playerBallMesh.material = ballMaterials[0];
+            _playerStats.ballType = _ballType;
+        }
+        else if (_playerStats.ballType == 1)
+        {
+            _ballType = _playerStats.ballType;
+            playerBallMesh.material = ballMaterials[0];
+        }
+        else if (_playerStats.ballType == 2)
+        {
+            _ballType = _playerStats.ballType;
+            playerBallMesh.material = ballMaterials[1];
+        }
+        
+        UISetup();
+        
         playerBallMesh.material.color = Color.HSVToRGB(colorSlider.value, 0.85f, 0.85f);
     }
 
     private void SetWelcomeText()
     {
-        welcomeText.SetText("Welcome " + playerInfo.playerName + "!");
+        welcomeText.SetText("Welcome " + _playerInfo.playerName + "!");
+    }
+    private void UISetup()
+    {
+        if (_ballType == 2)
+        {
+            metallicButton.SetActive(false);
+            woodenButton.SetActive(true);
+        }
     }
 
+    #endregion
+    
     private void ChangeBallColor()
     {
-        ballColor = Color.HSVToRGB(colorSlider.value, 0.85f, 0.85f);
-        playerBallMesh.material.color = ballColor;
+        _ballColor = Color.HSVToRGB(colorSlider.value, 0.85f, 0.85f);
+        playerBallMesh.material.color = _ballColor;
     }
 
     public void ToggleBallMaterial()
     {
-        if (ballType == 1)
+        if (_ballType == 1)
         {
-            ballType = 2;
+            _ballType = 2;
             playerBallMesh.material = ballMaterials[1];
             colorSlider.value = 0;
         }
-        else if (ballType == 2)
+        else if (_ballType == 2)
         {
-            ballType = 1;
+            _ballType = 1;
             playerBallMesh.material = ballMaterials[0];
             colorSlider.value = 0;
         }
     }
-    private void SaveToFile(string fileName, string jsonString)
+
+    public void SaveDataToFirebase()
     {
-        using (var stream = File.OpenWrite(fileName))
-        {
-            stream.SetLength(0);
-
-            var bytes = Encoding.UTF8.GetBytes(jsonString);
-
-            stream.Write(bytes, 0, bytes.Length);
-        }
-    }   
-
-    private string LoadFromFile(string fileName)
-    {
-        using (var stream = File.OpenText(fileName))
-        {
-            return stream.ReadToEnd();
-        }
+        _playerStats.ballType = _ballType;
+        _playerStats.ballColor = colorSlider.value;
+        _saveManager.SaveToFirebase(_playerStats);
     }
-
+    
     public void LoadGame()
     {
+        float[] playerScore = {0};
+        _playerInfo.CopyPlayerData(_ballType, colorSlider.value, playerScore);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }
