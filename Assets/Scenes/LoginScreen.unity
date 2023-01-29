@@ -438,8 +438,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1834832668}
-        m_TargetAssemblyTypeName: MainMenuScript, Assembly-CSharp
+      - m_Target: {fileID: 1556043685}
+        m_TargetAssemblyTypeName: StartupScreenScript, Assembly-CSharp
         m_MethodName: ToggleBallMaterial
         m_Mode: 1
         m_Arguments:
@@ -1057,84 +1057,6 @@ RectTransform:
   m_AnchoredPosition: {x: 228.29999, y: -148.75644}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &237394024
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 237394026}
-  - component: {fileID: 237394025}
-  - component: {fileID: 237394027}
-  - component: {fileID: 237394028}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &237394025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 237394024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 182b1faed7a2c6140888e6197fa4674e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &237394026
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 237394024}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.190824, y: -2.7093773, z: 137.21353}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &237394027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 237394024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c510011abc7637e488a77e29bbe7fdb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &237394028
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 237394024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 614b66556bfc97f4c83320d914375d88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerName: 
-  playerID: 
-  userID: 
-  playerEmail: 
-  playerIsAnonymous: 0
-  ballType: 0
-  ballColor: 0
-  playerScore: []
 --- !u!1 &261501683
 GameObject:
   m_ObjectHideFlags: 0
@@ -3049,8 +2971,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1834832668}
-        m_TargetAssemblyTypeName: MainMenuScript, Assembly-CSharp
+      - m_Target: {fileID: 1556043685}
+        m_TargetAssemblyTypeName: StartupScreenScript, Assembly-CSharp
         m_MethodName: ToggleBallMaterial
         m_Mode: 1
         m_Arguments:
@@ -4624,8 +4546,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1556043688}
-        m_TargetAssemblyTypeName: MainMenuScript, Assembly-CSharp
+      - m_Target: {fileID: 1556043685}
+        m_TargetAssemblyTypeName: StartupScreenScript, Assembly-CSharp
         m_MethodName: LoadGame
         m_Mode: 1
         m_Arguments:
@@ -4892,8 +4814,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1556043688}
-        m_TargetAssemblyTypeName: MainMenuScript, Assembly-CSharp
+      - m_Target: {fileID: 1556043685}
+        m_TargetAssemblyTypeName: StartupScreenScript, Assembly-CSharp
         m_MethodName: SaveDataToFirebase
         m_Mode: 1
         m_Arguments:
@@ -6206,7 +6128,6 @@ GameObject:
   - component: {fileID: 1556043687}
   - component: {fileID: 1556043686}
   - component: {fileID: 1556043685}
-  - component: {fileID: 1556043688}
   - component: {fileID: 1556043684}
   m_Layer: 5
   m_Name: Panel
@@ -6280,9 +6201,18 @@ MonoBehaviour:
   emailField: {fileID: 1914251233}
   passwordField: {fileID: 1073376179}
   anonymousField: {fileID: 1326073016}
+  welcomeText: {fileID: 152572842}
   signInButton: {fileID: 280625634}
   registerButton: {fileID: 1259858455}
   anonymousSignInButton: {fileID: 2613452}
+  colorSlider: {fileID: 1718049120}
+  playerBall: {fileID: 266668423}
+  playerBallMesh: {fileID: 266668424}
+  metallicButton: {fileID: 119045136}
+  woodenButton: {fileID: 852362729}
+  ballMaterials:
+  - {fileID: 2100000, guid: 71c77de15e8ee8248aa8bd0e4ef96d56, type: 2}
+  - {fileID: 2100000, guid: fce55a16a3359734d96c5691be61a10f, type: 2}
 --- !u!114 &1556043686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6321,28 +6251,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1556043682}
   m_CullTransparentMesh: 1
---- !u!114 &1556043688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1556043682}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc4085843554d78438f7bb6b6f80be3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  welcomeText: {fileID: 152572842}
-  nameInputField: {fileID: 0}
-  colorSlider: {fileID: 1718049120}
-  playerBall: {fileID: 266668423}
-  playerBallMesh: {fileID: 266668424}
-  ballMaterials:
-  - {fileID: 2100000, guid: 71c77de15e8ee8248aa8bd0e4ef96d56, type: 2}
-  - {fileID: 2100000, guid: fce55a16a3359734d96c5691be61a10f, type: 2}
-  metallicButton: {fileID: 119045136}
-  woodenButton: {fileID: 852362729}
 --- !u!1 &1637042705
 GameObject:
   m_ObjectHideFlags: 0
@@ -7224,7 +7132,6 @@ GameObject:
   - component: {fileID: 1834832667}
   - component: {fileID: 1834832670}
   - component: {fileID: 1834832669}
-  - component: {fileID: 1834832668}
   - component: {fileID: 1834832671}
   m_Layer: 5
   m_Name: SubPanel1
@@ -7258,28 +7165,6 @@ RectTransform:
   m_AnchoredPosition: {x: 480, y: -870.2086}
   m_SizeDelta: {x: 960, y: 1740.4172}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1834832668
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834832666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc4085843554d78438f7bb6b6f80be3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  welcomeText: {fileID: 152572842}
-  nameInputField: {fileID: 0}
-  colorSlider: {fileID: 1718049120}
-  playerBall: {fileID: 266668423}
-  playerBallMesh: {fileID: 266668424}
-  ballMaterials:
-  - {fileID: 2100000, guid: 71c77de15e8ee8248aa8bd0e4ef96d56, type: 2}
-  - {fileID: 2100000, guid: fce55a16a3359734d96c5691be61a10f, type: 2}
-  metallicButton: {fileID: 119045136}
-  woodenButton: {fileID: 852362729}
 --- !u!114 &1834832669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8459,3 +8344,72 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2111026057}
   m_CullTransparentMesh: 1
+--- !u!1001 &8405229326229704828
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8405229326332086292, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.190824
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.7093773
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 137.21353
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405229326332086294, guid: 707291864acdf0d4da9abf81f26cf13d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 707291864acdf0d4da9abf81f26cf13d, type: 3}

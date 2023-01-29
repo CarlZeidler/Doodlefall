@@ -10,11 +10,18 @@ public class BallScript : MonoBehaviour
 
     [SerializeField] MeshRenderer playerBallMesh;
     [SerializeField] Material[] ballMaterials;
+    [SerializeField] private Transform boardStartTrigger;
 
+    private PlayerInfo _playerInfo;
+    
     private int ballType = 1;
-
+    private Vector3 boardStartPos;
+    
+    
     void Start()
     {
+        boardStartPos = boardStartTrigger.position;
+        _playerInfo = FindObjectOfType<PlayerInfo>();
         LoadBallSettings();
     }
 
@@ -25,15 +32,31 @@ public class BallScript : MonoBehaviour
 
     private void LoadBallSettings()
     {
-        ballType = PlayerPrefs.GetInt(PLAYER_BALL_KEY_MATERIAL);
+        ballType = _playerInfo.ballType;
 
-        if (!PlayerPrefs.HasKey(PLAYER_BALL_KEY_MATERIAL))
+        if (_playerInfo.ballType == 0)
             ballType = 1;
         if (ballType == 1)
             playerBallMesh.material = ballMaterials[0];
         else if (ballType == 2)
             playerBallMesh.material = ballMaterials[1];
 
-        playerBallMesh.material.color = Color.HSVToRGB(PlayerPrefs.GetFloat(PLAYER_BALL_KEY_COLOR), 0.85f, 0.85f);
+        playerBallMesh.material.color = Color.HSVToRGB(_playerInfo.ballColor, 0.85f, 0.85f);
+    }
+
+    public void Respawn()
+    {
+        Debug.Log("Respawning....");
+        transform.position = boardStartPos;
+    }
+
+    public void Death(float scoreToAdd)
+    {
+        
+    }
+    
+    public void Scoreup(float scoreToAdd)
+    {
+        
     }
 }

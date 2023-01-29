@@ -11,6 +11,8 @@ public class Trigger : MonoBehaviour
 
     [SerializeField] private bool constantTrigger;
 
+    private const string TAGKEY_PLAYER = "Player";
+    
     private void OnTriggerExit(Collider other)
     {
         Debug.Log("Trigger Exit");

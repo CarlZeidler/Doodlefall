@@ -14,7 +14,7 @@ using UnityEditor;
 public class SaveManager : MonoBehaviour
 {
     private PlayerInfo _playerInfo;
-    private LoginScreenScript _loginScript;
+    private StartupScreenScript _startupScript;
     
     //Singleton variables
     private static SaveManager _instance;
@@ -24,10 +24,10 @@ public class SaveManager : MonoBehaviour
     }
     
     //Functions that gets called after load or save is completed
-    public delegate void OnLoadedDelegate(DataSnapshot snapshot);
+    public delegate void OnLoadedDelegate(string jsonString);
     public delegate void OnSaveDelegate();
     public delegate void OnRegistrationDelegate(bool anonymousRegistration, PlayerStats playerStats);
-    public delegate void OnSigninDelegate(DataSnapshot snapshot);
+    public delegate void OnSigninDelegate(string jsonString);
     
     //Firebase namespaces
     private FirebaseAuth auth;
@@ -61,12 +61,13 @@ public class SaveManager : MonoBehaviour
         });
         
         _playerInfo = FindObjectOfType<PlayerInfo>();
-        _loginScript = FindObjectOfType<LoginScreenScript>();
+        _startupScript = FindObjectOfType<StartupScreenScript>();
     }
 
     #region USER REGISTRATION FUNCTIONS
 
     ////////////////////////////// USER REGISTRATION FUNCTIONS //////////////////////////////
+    
     public void RegisterNewUser(string email, string password, OnRegistrationDelegate onRegistrationDelegate)
     {
         Debug.Log("Starting user registration");
@@ -86,7 +87,7 @@ public class SaveManager : MonoBehaviour
                 _playerInfo.playerEmail = newUser.Email;
                 _playerInfo.playerIsAnonymous = false;
                 Debug.LogFormat("local data saved: {0}, {1}, {2}", _playerInfo.userID, _playerInfo.playerEmail, _playerInfo.playerIsAnonymous.ToString());
-                Debug.LogFormat("User registered: {0}, user ID: {1}", newUser.Email, newUser.UserId);
+                Debug.LogFormat("User registered: {0}, user ID: {1}", _playerInfo.playerEmail, _playerInfo.userID);
                 
                 Debug.LogFormat("Attempting to start data save: {0}", jsonString);
                 db.RootReference.Child(FBKEY_USERS_PATH).Child(newUser.UserId).Child(FBKEY_USERSDATA_PATH)
@@ -129,7 +130,7 @@ public class SaveManager : MonoBehaviour
             else
             {
                 FirebaseUser newUser = task.Result;
-                Debug.LogFormat("User signed in anonymously: {0}, user ID: {1}", newUser.DisplayName, newUser.UserId);
+                Debug.LogFormat("User signed in anonymously: {0}, user ID: {1}", playerName, newUser.UserId);
                 onRegistrationDelegate.Invoke(true, playerStats);
                 _playerInfo.playerName = playerName;
                 _playerInfo.playerIsAnonymous = true;
@@ -156,7 +157,7 @@ public class SaveManager : MonoBehaviour
                 _playerInfo.userID = newUser.UserId;
                 _playerInfo.playerEmail = newUser.Email;
                 _playerInfo.playerIsAnonymous = false;
-
+                
                 db.RootReference.Child(FBKEY_USERS_PATH).Child(newUser.UserId).Child(FBKEY_USERSDATA_PATH)
                     .GetValueAsync().ContinueWithOnMainThread(task1 =>
                 {
@@ -164,7 +165,8 @@ public class SaveManager : MonoBehaviour
                         Debug.LogWarning(task1.Exception);
                     else
                     {
-                        onSigninDelegate.Invoke(task1.Result);
+                        string jsonString = task1.Result.GetRawJsonValue();
+                        onSigninDelegate.Invoke(jsonString);
                     }
                 });
             }
@@ -194,8 +196,12 @@ public class SaveManager : MonoBehaviour
         {
             if (task.Exception != null)
                 Debug.LogError(task.Exception);
-
-            _loginScript.SignInCallback(task.Result);
+            else
+            {
+                string jsonString = task.Result.GetRawJsonValue();
+                onLoadedDelegate.Invoke(jsonString);
+                _startupScript.SignInCallback(jsonString);
+            }
 
         });
     }
