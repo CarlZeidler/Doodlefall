@@ -12,16 +12,17 @@ public class BallScript : MonoBehaviour
     [SerializeField] Material[] ballMaterials;
     [SerializeField] private Transform boardStartTrigger;
 
-    private PlayerInfo _playerInfo;
+    private PlayerInfo playerInfo;
+    private HighScoreManager highScoreManager;
     
     private int ballType = 1;
     private Vector3 boardStartPos;
-    
-    
+
     void Start()
     {
         boardStartPos = boardStartTrigger.position;
-        _playerInfo = FindObjectOfType<PlayerInfo>();
+        playerInfo = FindObjectOfType<PlayerInfo>();
+        highScoreManager = FindObjectOfType<HighScoreManager>();
         LoadBallSettings();
     }
 
@@ -32,16 +33,16 @@ public class BallScript : MonoBehaviour
 
     private void LoadBallSettings()
     {
-        ballType = _playerInfo.ballType;
+        ballType = playerInfo.ballType;
 
-        if (_playerInfo.ballType == 0)
+        if (playerInfo.ballType == 0)
             ballType = 1;
         if (ballType == 1)
             playerBallMesh.material = ballMaterials[0];
         else if (ballType == 2)
             playerBallMesh.material = ballMaterials[1];
 
-        playerBallMesh.material.color = Color.HSVToRGB(_playerInfo.ballColor, 0.85f, 0.85f);
+        playerBallMesh.material.color = Color.HSVToRGB(playerInfo.ballColor, 0.85f, 0.85f);
     }
 
     public void Respawn()
@@ -50,13 +51,15 @@ public class BallScript : MonoBehaviour
         transform.position = boardStartPos;
     }
 
-    public void Death(float scoreToAdd)
+    public void Death()
     {
-        
+        StartCoroutine(respawnEnumerator);
     }
     
-    public void Scoreup(float scoreToAdd)
+    private IEnumerator respawnEnumerator;
+    
+    public void Scoreup(int scoreToAdd)
     {
-        
+        highScoreManager.UpdateCurrentScore(scoreToAdd);
     }
 }

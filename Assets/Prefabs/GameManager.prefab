@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8405229326332086293}
   - component: {fileID: 8405229326332086295}
   - component: {fileID: 8405229326332086288}
+  - component: {fileID: 8846753583201379671}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -78,3 +79,15 @@ MonoBehaviour:
   ballType: 0
   ballColor: 0
   playerScore: []
+--- !u!114 &8846753583201379671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8405229326332086292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5632be6227f3645a218dd4ec9858a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

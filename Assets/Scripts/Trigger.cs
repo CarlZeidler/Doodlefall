@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,8 +12,14 @@ public class Trigger : MonoBehaviour
 
     [SerializeField] private bool constantTrigger;
 
+    private MeshRenderer mesh;
     private const string TAGKEY_PLAYER = "Player";
-    
+
+    private void Start()
+    {
+        mesh.enabled = false;
+    }
+
     private void OnTriggerExit(Collider other)
     {
         Debug.Log("Trigger Exit");

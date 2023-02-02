@@ -11,7 +11,7 @@ public class DeathZoneScript : MonoBehaviour
     {
         if (other.CompareTag(TAGKEY_PLAYER))
         {
-            other.gameObject.GetComponent<BallScript>().Respawn();
+            other.gameObject.GetComponent<BallScript>().Death();
         }
     }
 }
