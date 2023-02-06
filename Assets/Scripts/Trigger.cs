@@ -17,12 +17,12 @@ public class Trigger : MonoBehaviour
 
     private void Start()
     {
+        mesh = GetComponent<MeshRenderer>();
         mesh.enabled = false;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("Trigger Exit");
         if (other.CompareTag("Player"))
         {
             TriggerExitEvent.Invoke();

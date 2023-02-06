@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class BallScript : MonoBehaviour
 {
@@ -11,7 +15,9 @@ public class BallScript : MonoBehaviour
     [SerializeField] MeshRenderer playerBallMesh;
     [SerializeField] Material[] ballMaterials;
     [SerializeField] private Transform boardStartTrigger;
-
+    [SerializeField] private GameObject deathPanel;
+    [SerializeField] private TMP_Text deathScoreDisplay;
+    
     private PlayerInfo playerInfo;
     private HighScoreManager highScoreManager;
     
@@ -49,15 +55,17 @@ public class BallScript : MonoBehaviour
     {
         Debug.Log("Respawning....");
         transform.position = boardStartPos;
+        Time.timeScale = 1f;
     }
 
     public void Death()
     {
-        StartCoroutine(respawnEnumerator);
+        Time.timeScale = 0f;
+        deathPanel.SetActive(true);
+        deathScoreDisplay.text = highScoreManager.currentScore.ToString();
+        highScoreManager.AddScoreToFirebase();
     }
-    
-    private IEnumerator respawnEnumerator;
-    
+
     public void Scoreup(int scoreToAdd)
     {
         highScoreManager.UpdateCurrentScore(scoreToAdd);
