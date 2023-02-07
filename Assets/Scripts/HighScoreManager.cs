@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
+using Newtonsoft.Json.Serialization;
 using TMPro;
 using UnityEditor.VersionControl;
 using UnityEngine;
@@ -22,7 +23,7 @@ public class HighScoreManager : MonoBehaviour
     private FirebaseDatabase db;
     private PlayerInfo playerInfo;
     private HighScoreEntry[] scoreEntries;
-    
+
     private void Start()
     {
         db = FirebaseDatabase.DefaultInstance;
@@ -39,7 +40,7 @@ public class HighScoreManager : MonoBehaviour
     {
         HighScoreEntry highScoreEntry = new HighScoreEntry
         {
-            UserID = FirebaseAuth.DefaultInstance.CurrentUser.ToString(),
+            UserID = FirebaseAuth.DefaultInstance.CurrentUser.UserId,
             name = playerInfo.playerName,
             score = currentScore,
             Date = DateTime.Now.ToString()
@@ -58,24 +59,40 @@ public class HighScoreManager : MonoBehaviour
         });
     }
 
-    // public void LoadScoreBoard()
-    // {
-    //     DataSnapshot snap;
-    //     HighScoreEntry[] scoreArray;
-    //         
-    //     db.RootReference.Child(FBKEY_SCORES_PATH).GetValueAsync().ContinueWithOnMainThread(task =>
-    //     {
-    //         if (task.Exception != null)
-    //             Debug.LogWarning(task.Exception);
-    //         else
-    //         {
-    //            snap = task.Result;
-    //         }
-    //     });
-    //     
-    //     scoreArray = new HighScoreEntry[snap.ChildrenCount];
-    //     foreach(DataSnapshot.child child in snap);
-    // }
+    public HighScoreEntry[] LoadScoreBoard()
+    {
+        Debug.Log("Loading Scoreboard");
+    
+        db.RootReference.Child(FBKEY_SCORES_PATH).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+                Debug.LogWarning(task.Exception);
+            Debug.Log("Data fetched");
+            
+            DataSnapshot snap = task.Result;
+            
+            HighScoreEntry[] scoreArray = new HighScoreEntry[snap.ChildrenCount];
+
+            int scoreArrayLength = scoreArray.Length;
+            int scoreArrayPosition = 0;
+            
+            Debug.Log("Array length " + scoreArrayLength);
+
+            foreach (var item in task.Result.Children)
+            {
+                Debug.Log("Loop #: " + scoreArrayPosition);
+                string jsonString = (string)item.Value;
+                scoreArray[scoreArrayPosition] = JsonUtility.FromJson<HighScoreEntry>(jsonString);
+                Debug.Log(jsonString);
+                scoreArrayPosition++;
+            }
+            
+            Debug.Log(scoreArray);
+            
+            return scoreArray;
+        });
+        return null;
+    }
 }
 
 [Serializable]

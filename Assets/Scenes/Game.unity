@@ -12026,6 +12026,18 @@ MonoBehaviour:
   scoreDisplay: {fileID: 264787010}
   menuPanel: {fileID: 1586702858}
   highScoreManager: {fileID: 968103546}
+--- !u!114 &968103548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968103545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 137cd1f2f0291974bb0163815c105cb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &977350317 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 81047095842098878, guid: 448493efd29eccd4a87ade395d5b554c,
