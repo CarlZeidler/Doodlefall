@@ -10,10 +10,10 @@ public class HighScorePanelScript : MonoBehaviour
     [SerializeField] private TMP_Text scoreField;
     [SerializeField] private TMP_Text dateField;
 
-    public void updateFields(string name, int score, DateTime dateTime)
+    public void updateFields(string name, int score, string dateTime)
     {
         nameField.text = name;
         scoreField.text = score.ToString();
-        dateField.text = dateTime.ToString();
+        dateField.text = dateTime;
     }
 }

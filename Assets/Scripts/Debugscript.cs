@@ -20,11 +20,11 @@ public class Debugscript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            Debug.Log("Loading score");
-            highScoreManager.LoadScoreBoard();
-        }
+        // if (Input.GetKeyDown(KeyCode.M))
+        // {
+        //     Debug.Log("Loading score");
+        //     highScoreManager.ShowScoreBoard();
+        // }
 
         if (Input.GetKeyDown(KeyCode.L))
         {

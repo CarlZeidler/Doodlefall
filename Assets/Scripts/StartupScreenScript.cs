@@ -85,6 +85,7 @@ public class StartupScreenScript : MonoBehaviour
         //Borpa was here
         playerBall.transform.Rotate(new Vector3(0, -0.1f, 0));
     }
+    
     private void ChangeBallColor()
     {
         _ballColor = Color.HSVToRGB(colorSlider.value, 0.85f, 0.85f);

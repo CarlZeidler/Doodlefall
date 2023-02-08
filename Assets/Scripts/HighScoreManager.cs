@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
@@ -16,6 +17,7 @@ public class HighScoreManager : MonoBehaviour
 {
     [SerializeField] private GameObject highScorePanel;
     [SerializeField] private TMP_Text scoreDisplay;
+    [SerializeField] private GameObject highScoreEntriesPanel;
     
     private const string FBKEY_SCORES_PATH = "scores";
     private const string FBKEY_SCOREENTRY_PATH = "entry";
@@ -23,13 +25,77 @@ public class HighScoreManager : MonoBehaviour
     private FirebaseDatabase db;
     private PlayerInfo playerInfo;
     private HighScoreEntry[] scoreEntries;
+    private bool scoreBoardLoaded;
 
+    public delegate void onScoreFetchedDelegate(List<HighScoreEntry> scoreList);
+    
     private void Start()
     {
         db = FirebaseDatabase.DefaultInstance;
         playerInfo = FindObjectOfType<PlayerInfo>();
     }
 
+    public void LoadScoreBoard()
+    {
+        Debug.Log("Starting LoadScoreBoard");
+        FetchScoreBoard(ShowScoreBoard);
+        
+    }
+
+    public void ShowScoreBoard(List<HighScoreEntry> scoreList)
+    {
+        scoreList.Sort((x, y) => y.score.CompareTo(x.score));
+        Debug.Log("Scoreboard sorted");
+        foreach (var item in scoreList.Take(10))
+        {
+            // HighScoreEntry highScoreEntry = new HighScoreEntry
+            // {
+            //     UserID = item.UserID,
+            //     name = item.name,
+            //     score = item.score,
+            //     Date = item.name
+            // };
+            
+            GameObject thisScorePanel = Instantiate(highScorePanel, highScoreEntriesPanel.transform);
+            HighScorePanelScript panelScript = thisScorePanel.GetComponent<HighScorePanelScript>();
+            panelScript.updateFields(item.name, item.score, item.Date);
+        }
+    }
+    
+    public void FetchScoreBoard(onScoreFetchedDelegate onScoreFetchedDelegate)
+    {
+        Debug.Log("Loading Scoreboard");
+    
+        db.RootReference.Child(FBKEY_SCORES_PATH).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+                Debug.LogWarning(task.Exception);
+            Debug.Log("Data fetched");
+            
+            List<HighScoreEntry> scoreList = new List<HighScoreEntry>();
+            
+            // HighScoreEntry[] scoreArray = new HighScoreEntry[snap.ChildrenCount];
+            //
+            // int scoreArrayLength = scoreArray.Length;
+            // int scoreArrayPosition = 0;
+
+            int scoreListPosition = 0;
+            
+            foreach (var item in task.Result.Children)
+            {
+                Debug.Log("Loop #" + scoreListPosition);
+                string jsonString = (string)item.Value;
+                scoreList.Insert(scoreListPosition,  JsonUtility.FromJson<HighScoreEntry>(jsonString));
+                Debug.Log(jsonString);
+                scoreListPosition++;
+            }
+            Debug.Log("List length " + scoreList.Count);
+            
+            Debug.Log(scoreList);
+            onScoreFetchedDelegate(scoreList);
+            });
+        }
+    
     public void UpdateCurrentScore(int incomingScoreValue)
     {
         currentScore += incomingScoreValue;
@@ -57,41 +123,6 @@ public class HighScoreManager : MonoBehaviour
             if (task.Exception != null)
                 Debug.LogWarning(task.Exception);
         });
-    }
-
-    public HighScoreEntry[] LoadScoreBoard()
-    {
-        Debug.Log("Loading Scoreboard");
-    
-        db.RootReference.Child(FBKEY_SCORES_PATH).GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.Exception != null)
-                Debug.LogWarning(task.Exception);
-            Debug.Log("Data fetched");
-            
-            DataSnapshot snap = task.Result;
-            
-            HighScoreEntry[] scoreArray = new HighScoreEntry[snap.ChildrenCount];
-
-            int scoreArrayLength = scoreArray.Length;
-            int scoreArrayPosition = 0;
-            
-            Debug.Log("Array length " + scoreArrayLength);
-
-            foreach (var item in task.Result.Children)
-            {
-                Debug.Log("Loop #: " + scoreArrayPosition);
-                string jsonString = (string)item.Value;
-                scoreArray[scoreArrayPosition] = JsonUtility.FromJson<HighScoreEntry>(jsonString);
-                Debug.Log(jsonString);
-                scoreArrayPosition++;
-            }
-            
-            Debug.Log(scoreArray);
-            
-            return scoreArray;
-        });
-        return null;
     }
 }
 
