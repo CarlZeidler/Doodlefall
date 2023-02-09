@@ -37,7 +37,7 @@ public class SaveManager : MonoBehaviour
     const string FBKEY_USERS_PATH = "users";
     const string FBKEY_USERSDATA_PATH = "user_data";
 
-    private void Awake()
+    private void Start()
     {
         //Singleton setup
         if (_instance == null)
@@ -50,16 +50,18 @@ public class SaveManager : MonoBehaviour
             Destroy(this.gameObject);
         }
         
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.Exception != null)
-                Debug.LogError(task.Exception);
-
-            auth = FirebaseAuth.DefaultInstance;
-            db = FirebaseDatabase.DefaultInstance;
-            db.SetPersistenceEnabled(false);
-        });
-        
+        // FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        // {
+        //     if (task.Exception != null)
+        //         Debug.LogError(task.Exception);
+        //
+        //     auth = FirebaseAuth.DefaultInstance;
+        //     db = FirebaseDatabase.DefaultInstance;
+        //     db.SetPersistenceEnabled(false);
+        // });
+        auth = FirebaseAuth.DefaultInstance;
+        db = FirebaseDatabase.DefaultInstance;
+        db.SetPersistenceEnabled(false);
         _playerInfo = FindObjectOfType<PlayerInfo>();
         _startupScript = FindObjectOfType<StartupScreenScript>();
     }
@@ -131,9 +133,9 @@ public class SaveManager : MonoBehaviour
             {
                 FirebaseUser newUser = task.Result;
                 Debug.LogFormat("User signed in anonymously: {0}, user ID: {1}", playerName, newUser.UserId);
-                onRegistrationDelegate.Invoke(true, playerStats);
                 _playerInfo.playerName = playerName;
                 _playerInfo.playerIsAnonymous = true;
+                onRegistrationDelegate.Invoke(true, playerStats);
             }
         });
     }

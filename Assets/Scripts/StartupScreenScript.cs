@@ -59,9 +59,7 @@ public class StartupScreenScript : MonoBehaviour
     
     private void Update()
     {
-        SpinBall();
-        
-        if (Input.GetKeyDown(KeyCode.Alpha5))
+        if (Input.GetButtonDown("Jump"))
         {
             Debug.Log("Logging in test user1");
             _saveManager.UserSignIn("testuser@testaddress.com", "testtest1", SignInCallback);
@@ -78,6 +76,8 @@ public class StartupScreenScript : MonoBehaviour
             Debug.Log("Logging in test user3");
             _saveManager.UserSignIn("testuser3@testaddress.com", "testtest1", SignInCallback);
         }
+        
+        SpinBall();
     }
 
     private void SpinBall()
@@ -106,11 +106,6 @@ public class StartupScreenScript : MonoBehaviour
             playerBallMesh.material = ballMaterials[0];
             colorSlider.value = 0;
         }
-    }
-
-    private void SetWelcomeText()
-    {
-        welcomeText.SetText("Welcome " + _playerInfo.playerName + "!");
     }
     
     private void UISetup()
@@ -174,7 +169,8 @@ public class StartupScreenScript : MonoBehaviour
         if (anonymousRegistration)
         {
             loginCanvas.SetActive(false);
-            playerSetupCanvas.SetActive(true);            
+            playerSetupCanvas.SetActive(true);
+            SetWelcomeText();
         }
         else
         {
@@ -242,6 +238,11 @@ public class StartupScreenScript : MonoBehaviour
         UISetup();
         
         playerBallMesh.material.color = Color.HSVToRGB(colorSlider.value, 0.85f, 0.85f);
+    }
+  
+    private void SetWelcomeText()
+    {
+        welcomeText.SetText("Welcome " + _playerInfo.playerName + "!");
     }
 
     #endregion

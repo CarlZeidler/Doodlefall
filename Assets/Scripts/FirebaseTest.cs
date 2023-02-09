@@ -4,7 +4,6 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
-using UnityEditor.VersionControl;
 using Random = UnityEngine.Random;
 
 public class FirebaseTest : MonoBehaviour

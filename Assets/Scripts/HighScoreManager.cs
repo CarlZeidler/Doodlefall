@@ -7,7 +7,6 @@ using Firebase.Database;
 using Firebase.Extensions;
 using Newtonsoft.Json.Serialization;
 using TMPro;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;

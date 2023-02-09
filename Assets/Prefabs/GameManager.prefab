@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 8405229326332086294}
   - component: {fileID: 8405229326332086293}
   - component: {fileID: 8405229326332086295}
-  - component: {fileID: 8405229326332086288}
-  - component: {fileID: 8846753583201379671}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -57,37 +55,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c510011abc7637e488a77e29bbe7fdb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8405229326332086288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8405229326332086292}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 614b66556bfc97f4c83320d914375d88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerName: 
-  playerID: 
-  userID: 
-  playerEmail: 
-  playerIsAnonymous: 0
-  ballType: 0
-  ballColor: 0
-  playerScore: []
---- !u!114 &8846753583201379671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8405229326332086292}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b5632be6227f3645a218dd4ec9858a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
