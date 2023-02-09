@@ -50,18 +50,16 @@ public class SaveManager : MonoBehaviour
             Destroy(this.gameObject);
         }
         
-        // FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-        // {
-        //     if (task.Exception != null)
-        //         Debug.LogError(task.Exception);
-        //
-        //     auth = FirebaseAuth.DefaultInstance;
-        //     db = FirebaseDatabase.DefaultInstance;
-        //     db.SetPersistenceEnabled(false);
-        // });
-        auth = FirebaseAuth.DefaultInstance;
-        db = FirebaseDatabase.DefaultInstance;
-        db.SetPersistenceEnabled(false);
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+                Debug.LogError(task.Exception);
+        
+            auth = FirebaseAuth.DefaultInstance;
+            db = FirebaseDatabase.DefaultInstance;
+            db.SetPersistenceEnabled(false);
+        });
+        
         _playerInfo = FindObjectOfType<PlayerInfo>();
         _startupScript = FindObjectOfType<StartupScreenScript>();
     }
