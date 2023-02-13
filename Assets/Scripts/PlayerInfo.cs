@@ -30,6 +30,6 @@ public class PlayerInfo : MonoBehaviour
         //Data is copied here to carry over to game scene
         ballType = incBallType;
         ballColor = incBallColor;
-        playerScore = incPlayerScore;
+        playerScore = incPlayerScore; //TODO: Remove references to old score system
     }
 }

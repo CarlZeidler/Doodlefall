@@ -59,7 +59,8 @@ public class StartupScreenScript : MonoBehaviour
     
     private void Update()
     {
-        if (Input.GetButtonDown("Jump"))
+        //Test accounts:
+        if (Input.GetKeyDown(KeyCode.Alpha5))
         {
             Debug.Log("Logging in test user1");
             _saveManager.UserSignIn("testuser@testaddress.com", "testtest1", SignInCallback);
@@ -249,7 +250,7 @@ public class StartupScreenScript : MonoBehaviour
 
     public void LoadGame()
     {
-        float[] playerScore = { 0 };
+        float[] playerScore = { 0 }; //TODO: remove references to old scoring system
         _playerInfo.CopyPlayerData(_ballType, colorSlider.value, playerScore);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }

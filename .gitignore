@@ -119,5 +119,7 @@ Assets/Firebase/Plugins/x86_64/FirebaseCppApp-10_4_0.so
 Assets/Firebase/Plugins/x86_64/FirebaseCppApp-10_4_0.so.meta
 
 #Non-build assets
-Assets\YughuesFreeMetalMaterials
-Assets\Stylized Wood Textures
+Assets/YughuesFreeMetalMaterials/
+Assets/Stylized Wood Textures/
+Assets/JMO Assets/
+Assets/JMO Assets.meta

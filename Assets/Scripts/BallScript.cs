@@ -47,7 +47,6 @@ public class BallScript : MonoBehaviour
 
     public void Respawn()
     {
-        Debug.Log("Respawning....");
         highScoreManager.currentScore = 0;
         transform.position = boardStartPos;
         Time.timeScale = 1f;

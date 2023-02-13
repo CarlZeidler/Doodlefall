@@ -5,10 +5,13 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
+    [SerializeField] private GameObject tiltInstructionsText;
+    
     public GameObject playerBall;
     private Vector3 cameraSpeed = Vector3.zero;
-    private bool following = false;
+    private bool following;
     private float initialZPos;
+    
 
     void Start()
     {
@@ -39,5 +42,6 @@ public class CameraFollow : MonoBehaviour
     public void StartFollowing()
     {
         following = true;
+        tiltInstructionsText.SetActive(false);
     }
 }

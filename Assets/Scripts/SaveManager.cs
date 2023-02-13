@@ -8,7 +8,6 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
-using Unity.VisualScripting;
 using UnityEditor;
 
 public class SaveManager : MonoBehaviour

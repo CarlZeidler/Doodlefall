@@ -20,7 +20,7 @@ public class HighScoreManager : MonoBehaviour
     
     private const string FBKEY_SCORES_PATH = "scores";
     private const string FBKEY_SCOREENTRY_PATH = "entry";
-    public int currentScore = 0;
+    public int currentScore;
     private FirebaseDatabase db;
     private PlayerInfo playerInfo;
     private HighScoreEntry[] scoreEntries;
@@ -37,14 +37,12 @@ public class HighScoreManager : MonoBehaviour
 
     public void LoadScoreBoard()
     {
-        Debug.Log("Starting LoadScoreBoard");
         FetchScoreBoard(ShowScoreBoard);
     }
 
     public void ShowScoreBoard(List<HighScoreEntry> scoreList)
     {
         scoreList.Sort((x, y) => y.score.CompareTo(x.score));
-        Debug.Log("Scoreboard sorted");
         foreach (var item in scoreList.Take(10))
         {
             GameObject thisScorePanel = Instantiate(highScorePanel, highScoreEntriesPanel.transform);
@@ -64,13 +62,10 @@ public class HighScoreManager : MonoBehaviour
     
     public void FetchScoreBoard(onScoreFetchedDelegate onScoreFetchedDelegate)
     {
-        Debug.Log("Loading Scoreboard");
-    
         db.RootReference.Child(FBKEY_SCORES_PATH).GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.Exception != null)
                 Debug.LogWarning(task.Exception);
-            Debug.Log("Data fetched");
             
             List<HighScoreEntry> scoreList = new List<HighScoreEntry>();
 
@@ -78,15 +73,11 @@ public class HighScoreManager : MonoBehaviour
             
             foreach (var item in task.Result.Children)
             {
-                Debug.Log("Loop #" + scoreListPosition);
                 string jsonString = (string)item.Value;
                 scoreList.Insert(scoreListPosition,  JsonUtility.FromJson<HighScoreEntry>(jsonString));
-                Debug.Log(jsonString);
                 scoreListPosition++;
             }
-            Debug.Log("List length " + scoreList.Count);
             
-            Debug.Log(scoreList);
             onScoreFetchedDelegate(scoreList);
             });
         }
