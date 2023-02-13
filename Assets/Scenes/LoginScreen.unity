@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17194879, g: 0.20564848, b: 0.24484357, a: 1}
+  m_IndirectSpecularColor: {r: 0.17195486, g: 0.20565902, b: 0.24486494, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3399,7 +3399,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 140.2
+  m_fontSize: 121.9
   m_fontSizeBase: 139.6
   m_fontWeight: 400
   m_enableAutoSizing: 1

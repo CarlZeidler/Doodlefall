@@ -8,15 +8,13 @@ using UnityEngine.UIElements;
 
 public class BallScript : MonoBehaviour
 {
-    private const string PLAYER_INFO_KEY = "PlayerName";
-    private const string PLAYER_BALL_KEY_COLOR = "PlayerBallColor";
-    private const string PLAYER_BALL_KEY_MATERIAL = "PlayerBallMaterial";
-
     [SerializeField] MeshRenderer playerBallMesh;
     [SerializeField] Material[] ballMaterials;
     [SerializeField] private Transform boardStartTrigger;
     [SerializeField] private GameObject deathPanel;
     [SerializeField] private TMP_Text deathScoreDisplay;
+    [SerializeField] private GameObject goalPanel;
+    [SerializeField] private TMP_Text goalScoreDisplay;
     
     private PlayerInfo playerInfo;
     private HighScoreManager highScoreManager;
@@ -32,19 +30,15 @@ public class BallScript : MonoBehaviour
         LoadBallSettings();
     }
 
-    void Update()
-    {
-        
-    }
-
     private void LoadBallSettings()
     {
         ballType = playerInfo.ballType;
 
-        if (playerInfo.ballType == 0)
+        if (playerInfo.ballType == 0 || ballType == 1)
+        {
             ballType = 1;
-        if (ballType == 1)
             playerBallMesh.material = ballMaterials[0];
+        }
         else if (ballType == 2)
             playerBallMesh.material = ballMaterials[1];
 
@@ -54,6 +48,7 @@ public class BallScript : MonoBehaviour
     public void Respawn()
     {
         Debug.Log("Respawning....");
+        highScoreManager.currentScore = 0;
         transform.position = boardStartPos;
         Time.timeScale = 1f;
     }
@@ -66,6 +61,14 @@ public class BallScript : MonoBehaviour
         highScoreManager.AddScoreToFirebase();
     }
 
+    public void Goal()
+    {
+        Time.timeScale = 0f;
+        goalPanel.SetActive(true);
+        goalScoreDisplay.text = highScoreManager.currentScore.ToString();
+        highScoreManager.AddScoreToFirebase();
+    }
+    
     public void Scoreup(int scoreToAdd)
     {
         highScoreManager.UpdateCurrentScore(scoreToAdd);

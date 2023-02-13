@@ -23,7 +23,7 @@ public class Trigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag(TAGKEY_PLAYER))
         {
             TriggerExitEvent.Invoke();
             gameObject.GetComponent<BoxCollider>().enabled = false;
@@ -32,7 +32,7 @@ public class Trigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag(TAGKEY_PLAYER))
         {
             TriggerEnterEvent.Invoke();
         }
@@ -40,7 +40,7 @@ public class Trigger : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player") && constantTrigger)
+        if (other.CompareTag(TAGKEY_PLAYER) && constantTrigger)
         {
             TriggerConstantEvent.Invoke();
         }

@@ -25,6 +25,7 @@ public class HighScoreManager : MonoBehaviour
     private PlayerInfo playerInfo;
     private HighScoreEntry[] scoreEntries;
     private bool scoreBoardLoaded;
+    private List<GameObject> highScoreListObjects = new List<GameObject>();
 
     public delegate void onScoreFetchedDelegate(List<HighScoreEntry> scoreList);
     
@@ -38,7 +39,6 @@ public class HighScoreManager : MonoBehaviour
     {
         Debug.Log("Starting LoadScoreBoard");
         FetchScoreBoard(ShowScoreBoard);
-        
     }
 
     public void ShowScoreBoard(List<HighScoreEntry> scoreList)
@@ -47,17 +47,18 @@ public class HighScoreManager : MonoBehaviour
         Debug.Log("Scoreboard sorted");
         foreach (var item in scoreList.Take(10))
         {
-            // HighScoreEntry highScoreEntry = new HighScoreEntry
-            // {
-            //     UserID = item.UserID,
-            //     name = item.name,
-            //     score = item.score,
-            //     Date = item.name
-            // };
-            
             GameObject thisScorePanel = Instantiate(highScorePanel, highScoreEntriesPanel.transform);
             HighScorePanelScript panelScript = thisScorePanel.GetComponent<HighScorePanelScript>();
             panelScript.updateFields(item.name, item.score, item.Date);
+            highScoreListObjects.Add(thisScorePanel);
+        }
+    }
+
+    public void ClearScoreBoard()
+    {
+        foreach (GameObject item in highScoreListObjects)
+        {
+            Destroy(item);
         }
     }
     
@@ -72,11 +73,6 @@ public class HighScoreManager : MonoBehaviour
             Debug.Log("Data fetched");
             
             List<HighScoreEntry> scoreList = new List<HighScoreEntry>();
-            
-            // HighScoreEntry[] scoreArray = new HighScoreEntry[snap.ChildrenCount];
-            //
-            // int scoreArrayLength = scoreArray.Length;
-            // int scoreArrayPosition = 0;
 
             int scoreListPosition = 0;
             
